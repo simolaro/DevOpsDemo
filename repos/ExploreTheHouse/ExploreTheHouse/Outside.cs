@@ -8,28 +8,21 @@ namespace ExploreTheHouse
 {
     class Outside : Location
     {
-        public override string Description => base.Description;
-
-        public override string ToString()
-        {
-            return base.ToString();
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
-
         private bool hot;
+        
 
-        public Outside(string name) : base(name)
+        public Outside(string name, bool hot) : base(name)
         {
-            if (hot) { name = "It' very hot here."; }
+            this.hot = hot;
+        }
+
+        public override string Description { 
+            get {
+                String newDescription = base.Description;
+                if (hot)
+                    newDescription += " It's very hot.";
+                return newDescription;
+            }
         }
 
     }

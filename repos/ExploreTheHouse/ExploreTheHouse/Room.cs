@@ -8,29 +8,21 @@ namespace ExploreTheHouse
 {
     class Room : Location
     {
-        public override string Description => base.Description;
+        public string decoration;
 
-        public override string ToString()
+        public override string Description
         {
-            return base.ToString();
+            get
+            {
+                return base.Description + " You see " + decoration + ".";
+            }
         }
 
-        public override int GetHashCode()
+        public Room(string name, string decoration) : base(name) 
         {
-            return base.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
-
-        private string decoration ; 
-
-        public Room(string name, string decoration) : base(name)
-        {
-            this.decoration = name; 
-            name = "You see " + decoration;
+            // Description = name;
+            this.decoration = decoration; 
+            
         }
        
     }

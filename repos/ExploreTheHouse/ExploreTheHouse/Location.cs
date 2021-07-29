@@ -15,7 +15,7 @@ namespace ExploreTheHouse
         {
             get
             {
-                string description = "You're staanding in the " + Name + ". Yousee exits to the following places: ";
+                string description = "You're standing in the " + Name + ". You see exits to the following places: ";
                 for (int i = 0; i < Exits.Length; i++)
                 {
                     description += " " + Exits[i].Name;

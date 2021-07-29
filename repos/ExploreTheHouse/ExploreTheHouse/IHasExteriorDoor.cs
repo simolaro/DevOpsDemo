@@ -8,7 +8,7 @@ namespace ExploreTheHouse
 {
     interface IHasExteriorDoor
     {
-        string DoorDescription { get; set; }
-        string DoorLocation { get; set; }
+        string DoorDescription { get; }
+        Location DoorLocation { get; set; }
     }
 }
