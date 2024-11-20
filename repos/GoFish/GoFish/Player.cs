@@ -48,11 +48,15 @@ namespace GoFish
             }
             return books;
         } 
-        //public Values GetRandomValue()
-        //{
+        public Values GetRandomValue()
+        {
             // This method gets a random value-but it has to be a value that's in the deck!
+            Random random = new Random();
+            int rand = random.Next(cards.Count-1);
 
-        //}
+            return cards.Peek(rand).Value;
+
+        }
         public Deck DoYouHaveAny(Values value)
         {
             // This is where an opponent asks if I have any cards of a certain value
@@ -60,7 +64,7 @@ namespace GoFish
             // that says, "Joe has 2 sixes"-use the new Card"Plural() static method
             Deck deckToReturn; 
             deckToReturn = cards.PullOutValues(value);
-            Form1._Form1.updateTextProgress(this.Name + " ask " + Card.Plural(value) + " " + value);
+            Form1._Form1.updateTextProgress(this.Name + " has " + deckToReturn.Count + " " + Card.Plural(value) );
 
             // retourner les cartes extraites
             return deckToReturn;
@@ -68,13 +72,54 @@ namespace GoFish
 
         public void AskForACard(List<Player> players, int myIndex, Deck stock)
         {
+            Deck deckToAdd = null;
+            bool indFindCard = false;
             // Utiliser pour les joueur du PC
-            // Here's an overloaded version of AskForACard()- choose a rendom value
-            // from the deck using GetRandomValue() and ask form it using AskFroACard()
+            // Here's an overloaded version of AskForACard() 
+            // Choose a rendom value from the deck using GetRandomValue() 
+            // Vérifier si le joueur à une carte dans son jeu
+            if (players[myIndex].cards.Count != 0)
+            {
+                Values cardToAsk = players[myIndex].GetRandomValue();
+
+
+                // Ask the other players for a value. 
+                // First add a line to the TextBox: "Joe asks if anyone has a Queen'. 
+                Form1._Form1.updateTextProgress(this.Name + " ask if anyone has a " + cardToAsk);
+
+                // Ask form it using AskFroACard()
+                foreach (Player player in players)
+                {
+                    if (player != players[myIndex]) // Vérifier si c'est le joueur humain
+                    {
+                        deckToAdd = player.DoYouHaveAny(cardToAsk);
+
+                        if (deckToAdd.Count > 0)
+                        {
+                            indFindCard = true;
+                            // He'll pass you a deck of cards-add them to my deck.
+                            for (int i = 0; i < deckToAdd.Count; i++)
+                            {
+                                cards.Add(deckToAdd.Peek(i));
+                            }
+                        }
+
+                    }
+
+                }
+            }
+            if (!indFindCard) // Si pas de cartes reçu, il faut en piger une
+            {
+                if (stock.Count > 0) { this.TakeCard(stock.Deal(0)); }
+                Form1._Form1.updateTextProgress(this.name + " must draw from the stock.");
+            }
         }
 
         public void AskForACard(List<Player> players, int myIndex, Deck stock, Values value)
         {
+            Deck deckToAdd;
+            bool indFindCard = false;
+
             // Ask the other players for a value. 
             // First add a line to the TextBox: "Joe asks if anyone has a Queen'. 
             Form1._Form1.updateTextProgress(this.Name + " ask if anyone has a " + value);
@@ -83,14 +128,34 @@ namespace GoFish
             // as a parameter and ask each player if he has any of the value (using his 
             // DoYouHaveAny() method). 
             foreach(Player player in players)
-            {
-                player.DoYouHaveAny(value);
+            { 
+                if (player != players[0]) // Vérifier si c'est le joueur humain
+                {
+                    deckToAdd = player.DoYouHaveAny(value);
+
+                    if (deckToAdd.Count > 0)
+                    {
+                        indFindCard = true;
+
+                        // He'll pass you a deck of cards-add them to my deck.
+                        for (int i = 0; i < deckToAdd.Count; i++)
+                        {
+                            cards.Add(deckToAdd.Peek(i));
+                        }
+                    }
+                    
+                }
+
             }
-            
-            // He'll pass you a deck of cards-add them to my deck. 
-            // Keep track of how many cards were added. If there weren't any, you'll need
-            // to deal yourself a card from the stock (which was also passed as a parameter),
-            // ans you'll have to add a line to the TextBox: "Joe had to draw from the stock"
+
+            if (!indFindCard) // Si pas de cartes reçu, il faut en piger une
+            {
+                // Keep track of how many cards were added. If there weren't any, you'll need
+                // to deal yourself a card from the stock (which was also passed as a parameter),
+                // ans you'll have to add a line to the TextBox: "Joe had to draw from the stock"
+                if (stock.Count > 0) { this.TakeCard(stock.Deal(0)); }
+                Form1._Form1.updateTextProgress(this.name + " must draw from the stock.");
+            }
 
 
         }
